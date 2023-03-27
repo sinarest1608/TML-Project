@@ -58,13 +58,15 @@ def basic_predict(model, x):
 
 #### TODO: implement your defense(s) as a new prediction function
 #### Put your code here
+
+###1.) Gaussian Blur
 def median_filter(img, kernel_size):
     filtered_img = np.zeros_like(img)
     for i in range(img.shape[-1]):
         filtered_img[..., i] = median_filter(img[..., i], size=kernel_size)
     return filtered_img
 
-def defense_predict(model, x):
+def defense_predict_1(model, x):
     # apply a median filter to smooth the image
     
     # x = medfilt2d(x, kernel_size=(3,3))
@@ -74,6 +76,21 @@ def defense_predict(model, x):
     x = gaussian_filter(x, sigma=1)
 
     return model(x)
+
+
+###2.) Add gaussian noise
+
+def defense_predict(model,x):
+#     print(x)
+    alpha = 1e-2
+    sigma = alpha*np.std(x)
+    mean = np.mean(x)
+    x = x + np.random.normal(mean,sigma,x.shape)
+    
+    return model(x)
+    
+
+
 
 ######### Membership Inference Attacks (MIAs) #########
 
