@@ -98,6 +98,33 @@ def load_data(fp='./data.npz'):
     print('Loaded dataset --- train_x shape: {}, train_y shape: {}, labels: {}'.format(train_x.shape, train_y.shape, labels))
     
     return train_x, train_y, test_x, test_y, val_x, val_y, labels
+
+def load_data_cnn(fp='./data_cifar100.npz'):
+    with np.load(fp) as data:
+        train_x = data['x_train']
+        train_y = data['y_train']
+        
+        test_x = data['x_test']
+        test_y = data['y_test']
+        
+        val_x = data['x_val']
+        val_y = data['y_val']
+        
+        labels = data['class_labels']
+        
+    train_x = train_x / 255.0
+    val_x = val_x / 255.0
+    test_x = test_x / 255.0
+
+    assert np.amax(train_x) <= 1 and np.amax(test_x) <= 1 and np.amax(val_x) <= 1
+    assert np.amax(train_x) >= 0 and np.amax(test_x) >= 0 and np.amax(val_x) >= 0
+
+    print(labels.shape, train_y.shape)
+    # assert labels.shape[0] == 100 and labels.shape[0] == train_y.shape[1]
+
+    print('Loaded dataset --- train_x shape: {}, train_y shape: {}, labels: {}'.format(train_x.shape, train_y.shape, labels))
+    
+    return train_x, train_y, test_x, test_y, val_x, val_y, labels
     
     
 import hashlib
@@ -123,6 +150,7 @@ def load_model(fp):
 
     print('Loaded model from file ({}) -- [{}].'.format(fp, fg))
     return model, hv
+
     
 
     

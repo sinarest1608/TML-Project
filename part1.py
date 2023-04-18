@@ -125,14 +125,16 @@ if __name__ == "__main__":
     #### load the data
     print('\n------------ Loading Data & Model ----------')
     
-    train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data()
+    # train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data()
+    train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data_cnn()
     num_classes = len(labels)
-    assert num_classes == 10 # cifar10
+    assert num_classes == 100 # cifar10
     
     ### load the target model (the one we want to protect)
-    target_model_fp = './target-model.h5'
+    target_model_fp = './cifar100_cnn.h5'
 
     model, _ = utils.load_model(target_model_fp)
+    print(model.summary())
     ## model.summary() ## you can uncomment this to check the model architecture (ResNet)
     
     st_after_model = time.time()
