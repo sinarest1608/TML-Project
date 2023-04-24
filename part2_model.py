@@ -3,6 +3,7 @@ from tensorflow.keras.datasets import cifar100
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import to_categorical
 
 # Load CIFAR-100 dataset
 (x_train, y_train), (x_test, y_test) = cifar100.load_data()
@@ -10,6 +11,12 @@ from tensorflow.keras.optimizers import Adam
 # Normalize pixel values to be between 0 and 1
 x_train = x_train.astype('float32') / 255
 x_test = x_test.astype('float32') / 255
+
+y_train = y_train.astype('float32') / 255
+y_test = y_test.astype('float32') / 255
+
+# y_train = to_categorical(y_train, num_classes=100)
+# y_test = to_categorical(y_test, num_classes=100)
 
 # Define the CNN model architecture
 inputs = Input(shape=(32, 32, 3))

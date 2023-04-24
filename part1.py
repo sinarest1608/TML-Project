@@ -18,6 +18,7 @@ from scipy.signal import medfilt2d
 from scipy.ndimage import gaussian_filter
 from scipy.ndimage.filters import median_filter
 from scipy import ndimage
+from efficientnet.tfkeras import EfficientNetB4
 
 # we'll use tensorflow and keras for neural networks
 import tensorflow as tf
@@ -127,11 +128,16 @@ if __name__ == "__main__":
     
     # train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data()
     train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data_cnn()
+    # train_x, train_y, test_x, test_y, val_x, val_y, labels = utils.load_data_svhn()
     num_classes = len(labels)
     assert num_classes == 100 # cifar10
     
     ### load the target model (the one we want to protect)
     target_model_fp = './cifar100_cnn.h5'
+    # target_model_fp = './cifar100_cnn_1.h5'
+    # target_model_fp = './cifar100_new.h5'
+    # target_model_fp = './Pre-Trained Model.h5'
+    # target_model_fp = './cifar100_model.h5'
 
     model, _ = utils.load_model(target_model_fp)
     print(model.summary())
@@ -176,7 +182,7 @@ if __name__ == "__main__":
         
         cm = confusion_matrix(mia_eval_data_in_out, in_out_preds, labels=[0,1])
         tn, fp, fn, tp = cm.ravel()
-        
+        print(tn, fp, fn, tp)
         attack_acc = np.trace(cm) / np.sum(np.sum(cm))
         attack_adv = tp / (tp + fn) - fp / (fp + tn)
         attack_precision = tp / (tp + fp)

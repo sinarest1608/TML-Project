@@ -93,6 +93,7 @@ def load_data(fp='./data.npz'):
     assert np.amax(train_x) <= 1 and np.amax(test_x) <= 1 and np.amax(val_x) <= 1
     assert np.amax(train_x) >= 0 and np.amax(test_x) >= 0 and np.amax(val_x) >= 0
 
+    print(train_x.shape, test_x.shape, train_y.shape, test_y.shape, labels.shape)
     assert labels.shape[0] == 10 and labels.shape[0] == train_y.shape[1]
 
     print('Loaded dataset --- train_x shape: {}, train_y shape: {}, labels: {}'.format(train_x.shape, train_y.shape, labels))
@@ -116,17 +117,45 @@ def load_data_cnn(fp='./data_cifar100.npz'):
     val_x = val_x / 255.0
     test_x = test_x / 255.0
 
+
     assert np.amax(train_x) <= 1 and np.amax(test_x) <= 1 and np.amax(val_x) <= 1
     assert np.amax(train_x) >= 0 and np.amax(test_x) >= 0 and np.amax(val_x) >= 0
 
-    print(labels.shape, train_y.shape)
-    # assert labels.shape[0] == 100 and labels.shape[0] == train_y.shape[1]
+    # print(labels.shape, train_y.shape)
+    print(train_x.shape, test_x.shape, train_y.shape, test_y.shape, labels.shape)
+    
+    assert labels.shape[0] == 100 and labels.shape[0] == train_y.shape[1]
 
     print('Loaded dataset --- train_x shape: {}, train_y shape: {}, labels: {}'.format(train_x.shape, train_y.shape, labels))
     
     return train_x, train_y, test_x, test_y, val_x, val_y, labels
     
+def load_data_svhn(fp='./svhn_data.npz'):
+    with np.load(fp) as data:
+        train_x = data['X_train']
+        train_y = data['y_train']
+        
+        test_x = data['X_test']
+        test_y = data['y_test']
+        
+        val_x = data['X_val']
+        val_y = data['y_val']
+        
+        labels = data['label_names']
+    train_x = train_x / 255.0
+    val_x = val_x / 255.0
+    test_x = test_x / 255.0
+
+
+    assert np.amax(train_x) <= 1 and np.amax(test_x) <= 1 and np.amax(val_x) <= 1
+    assert np.amax(train_x) >= 0 and np.amax(test_x) >= 0 and np.amax(val_x) >= 0
+    print(train_x.shape, test_x.shape, train_y.shape, test_y.shape, labels.shape)
+    assert labels.shape[0] == 10 and labels.shape[0] == train_y.shape[1]
+
+    print('Loaded dataset --- train_x shape: {}, train_y shape: {}, labels: {}'.format(train_x.shape, train_y.shape, labels))
     
+    return train_x, train_y, test_x, test_y, val_x, val_y, labels
+
 import hashlib
 
 def memv_filehash(fp):
