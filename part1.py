@@ -19,6 +19,9 @@ from scipy.ndimage import gaussian_filter
 from scipy.ndimage.filters import median_filter
 from scipy import ndimage
 from efficientnet.tfkeras import EfficientNetB4
+import cv2
+from skimage.restoration import denoise_bilateral, denoise_tv_chambolle
+
 
 # we'll use tensorflow and keras for neural networks
 import tensorflow as tf
@@ -58,23 +61,47 @@ def basic_predict(model, x):
 
 
 #### TODO: implement your defense(s) as a new prediction function
-#### Put your code here
-def median_filter(img, kernel_size):
-    filtered_img = np.zeros_like(img)
-    for i in range(img.shape[-1]):
-        filtered_img[..., i] = median_filter(img[..., i], size=kernel_size)
-    return filtered_img
+### Put your code here
+# def median_filter(img, kernel_size):
+#     filtered_img = np.zeros_like(img)
+#     for i in range(img.shape[-1]):
+#         filtered_img[..., i] = median_filter(img[..., i], size=kernel_size)
+#     return filtered_img
+
+# def defense_predict(model, x):
+#     # apply a median filter to smooth the image
+    
+#     # x = medfilt2d(x, kernel_size=(3,3))
+#     x = ndimage.median_filter(x, size=3) 
+#     # apply a Gaussian blur to reduce the noise
+    
+#     x = gaussian_filter(x, sigma=2)
+    
+#     # x = x/255.0
+
+#     return model(x)
+
+def apply_filters(img):
+    # apply a median filter to smooth the image
+    img = median_filter(img, size=3)
+    
+    # apply a total variation filter to reduce noise and preserve edges
+    img = denoise_tv_chambolle(img, weight=0.1)
+
+    return img
 
 def defense_predict(model, x):
-    # apply a median filter to smooth the image
+    # apply filters to the input image
+    x = apply_filters(x)
     
-    # x = medfilt2d(x, kernel_size=(3,3))
-    x = ndimage.median_filter(x, size=3) 
-    # apply a Gaussian blur to reduce the noise
+    # normalize the input image to a range of 0 to 1
+    x = x / 255.0
     
-    x = gaussian_filter(x, sigma=1)
+    # pass the filtered and normalized image to the model for prediction
+    return model.predict(x)
 
-    return model(x)
+
+
 
 ######### Membership Inference Attacks (MIAs) #########
 
@@ -133,11 +160,11 @@ if __name__ == "__main__":
     assert num_classes == 100 # cifar10
     
     ### load the target model (the one we want to protect)
-    target_model_fp = './cifar100_cnn.h5'
+    # target_model_fp = './cifar100_cnn_l1.h5'
     # target_model_fp = './cifar100_cnn_1.h5'
     # target_model_fp = './cifar100_new.h5'
     # target_model_fp = './Pre-Trained Model.h5'
-    # target_model_fp = './cifar100_model.h5'
+    target_model_fp = './cifar100_model.h5'
 
     model, _ = utils.load_model(target_model_fp)
     print(model.summary())
