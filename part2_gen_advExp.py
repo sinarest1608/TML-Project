@@ -43,3 +43,10 @@ for i in range(len(adv_x_test)):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) 
     filename = f"adversarial_examples/{i}.png"
     cv2.imwrite(filename, img)
+    
+np.savez('images.npz', x_test=x_test, adv_x_test=adv_x_test)
+
+# To load data from .npz 
+# data = np.load('images.npz')
+# x_test_loaded = data['x_test']
+# adv_x_test_loaded = data['adv_x_test']
